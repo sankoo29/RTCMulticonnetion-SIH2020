@@ -1,0 +1,336 @@
+﻿<!-- Demo version: 2018.12.11 -->
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Meeting</title>
+  <meta name="description" content="WebRTC Dashboard including support for canvas drawing, canvas data syncing, video conferencing, screen sharing and video conferencing. Including chat and file sharing.">
+
+  <link rel="shortcut icon" href="/demos/logo.png">
+
+  <link href="/demos/css/bootstrap.min.css" rel="stylesheet">
+  <script src="/demos/js/jquery-3.3.1.slim.min.js"></script>
+  <script src="/demos/js/popper.min.js"></script>
+  <script src="/demos/js/bootstrap.min.js"></script>
+<script src="https://rtcmulticonnection.herokuapp.com/socket.io/socket.io.js"></script>
+<script src="https://rtcmulticonnection.herokuapp.com/dist/RTCMultiConnection.min.js"></script>
+</head>
+<body>
+  <!-------------------------------------------------HEADER CODE--------------------------------------------------------->
+  <div id="home" class="row">
+      <div class="col-12 px-2">
+        <nav class="navbar-expand-lg py-3  collapseOnSelect bg-info variant-dark">
+        <div class="collapse navbar-collapse mr-5" id="navbarSupportedContent">
+         <a href="#" class="navbar-brand ml-5" style="color:white">Online Judiciary System</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="responsive-navbar-nav" aria-expanded="false" aria-label="Toggle navigation">
+          	<span class="navbar-toggler-icon"></span>
+          </button>
+          </div>
+        </nav>
+      </div>
+    </div>
+
+<!--------------------------------------------------THE MAIN PAGE------------------------------------------------------>
+<div class="wrapper container" >
+  <div class="row mt-4">
+  <div class="col-md-4 mx-auto  p-0 mb-2 bg-white rounded">
+          <h3 class="center">
+            Meeting 
+          </h3>
+   </div>
+   </div>
+   <div class = "row mt-3">
+    <div class = "col-md-4 mx-auto p-0 mb-3 bg-white rounded">
+      <!-----------------------------------UI CODE TO OPEN/JOIN THE MEETING----------------------------------------------->
+      <label htmlFor="txt-roomid-join">Enter Room ID:</label><br>
+      <input type="text" id="txt-roomid-join" class="form-control" autocorrect=off autocapitalize=off size=20><br>
+      <label htmlFor="txt-user-name-join">Enter Your Name:</label><br>
+      <input type="text" id="txt-user-name-join" class="form-control" autocorrect=off autocapitalize=off size=20><br>
+      <label htmlFor="txt-room-password-join">Enter Room Password:</label><br>
+      <input type="text" id="txt-room-password-join" class="form-control" placeholder="Copy the password here" autocorrect=off autocapitalize=off size=20><br>
+      <button id="btn-join-room" class="btn btn-primary btn-block">Join A Room</button>
+    </div>
+</div>
+    <div id="videos-container" style="margin: 20px 0;"></div>
+
+    <div id="room-urls" style="text-align: center;display: none;background: #F1EDED;margin: 15px -10px;border: 1px solid rgb(189, 189, 189);border-left: 0;border-right: 0;"></div>
+</div>
+  </div>
+
+  <div id="confirm-box-topper" style="display:none;z-index:99999999;top:0;left:0;bottom:0;right:0;width:100%;height:100%;position:fixed;background:#000000ad;"></div>
+  <div id="alert-box" class="modal fade" style="display:none;z-index:999999999999999;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="alert-title">Alert</h5>
+                        <button type="button" class="close btn-alert-close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="alert-message" class="model-list"></div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <p id="alert-special"></p>
+                        <button class="btn btn-primary btn-alert-close">Close</button>
+                    </div>
+                </div>
+            </div>
+  </div>
+
+  <div id="confirm-box" class="modal fade" style="display:none;z-index:999999999999999;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirm-title">Please Confirm</h5>
+                <button type="button" class="close btn-confirm-close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="confirm-message" class="modal-body"></div>
+
+            <div class="modal-footer">
+                <button class="btn btn-confirm-close" id="btn-confirm-close">Cancel</button>
+                <button class="btn btn-primary" id="btn-confirm-action">Confirm</button>
+            </div>
+        </div>
+    </div>
+  </div>
+
+
+<script>
+// this object is used to get uniquie rooms based on this demo
+// i.e. only those rooms that are created on this page
+var publicRoomIdentifier = 'meet';
+
+
+
+var connection = new RTCMultiConnection();
+
+connection.socketURL = '/';
+//location.href.replace('/admin.html', '/')
+//connection.socketURL = 'https://rtcmulticonnection.herokuapp.com:443/';
+
+/// make this room public
+connection.publicRoomIdentifier = publicRoomIdentifier;
+connection.socketMessageEvent = publicRoomIdentifier;
+
+// keep room opened even if owner leaves
+connection.autoCloseEntireSession = true;
+
+connection.connectSocket(function(socket) {
+    socket.on('disconnect', function() {
+        location.reload();
+    });
+});
+
+$('#btn-create-room').click(function() {
+    var roomid = $('#txt-roomid-create').val().toString();
+    if (!roomid || !roomid.replace(/ /g, '').length) {
+        alertBox('Please enter room-id.', 'Room ID Is Required');
+        return;
+    }
+
+    var fullName = $('#txt-user-name-create').val().toString();
+    if (!fullName || !fullName.replace(/ /g, '').length) {
+        alertBox('Please enter your name.', 'Your Name Is Required');
+        return;
+    }
+
+    connection.extra.userFullName = fullName;
+
+    var roomPassword = $('#txt-room-password-create').val().toString();
+    if (!roomPassword || !roomPassword.replace(/ /g, '').length) {
+        alertBox('Please enter room password.', 'Password Box Is Empty');
+        return;
+    }
+
+    connection.password = roomPassword;
+
+    var initialHTML = $('#btn-create-room').html();
+
+    $('#btn-create-room').html('Please wait...').prop('disabled', true);
+
+    connection.checkPresence(roomid, function(isRoomExist) {
+        if (isRoomExist === true) {
+            alertBox('This room-id is already taken and room is active. Please join instead.', 'Room ID In Use');
+            $('#btn-create-room').html(initialHTML).prop('disabled', false);
+            return;
+        }
+        else {
+            connection.publicRoomIdentifier = '';
+        }
+
+        connection.sessionid = roomid;
+        connection.isInitiator = true;
+        openCanvasDesigner();
+    });
+});
+
+
+$('#btn-join-room').click(function() {
+    var roomid = $('#txt-roomid-join').val().toString();
+    if (!roomid || !roomid.replace(/ /g, '').length) {
+        alertBox('Please enter room-id.', 'Room ID Is Required');
+        return;
+    }
+
+    var fullName = $('#txt-user-name-join').val().toString();
+    if (!fullName || !fullName.replace(/ /g, '').length) {
+        alertBox('Please enter your name.', 'Your Name Is Required');
+        return;
+    }
+
+    connection.extra.userFullName = fullName;
+
+    var roomPassword = $('#txt-room-password-join').val().toString();
+    if (!roomPassword || !roomPassword.replace(/ /g, '').length) {
+        alertBox('Please enter room password.', 'Password Box Is Empty');
+        return;
+    }
+    connection.password = roomPassword;
+    connection.checkPresence(roomid, function(isRoomExist) {
+        if (isRoomExist === true) {
+           connection.socket.emit('is-valid-password', connection.password, roomid, function(isValidPassword, roomid, error) {
+              if(isValidPassword === true) {
+                 joinARoom(roomid);
+              }
+              else {
+                alertBox(error, 'Password Issue');
+              }
+           });
+        }
+	else{
+	   joinARoom(roomid);
+	}
+     });
+    return;
+    joinARoom(roomid);
+});
+
+// Auto Open or Join room
+function joinARoom(roomid) {
+   var initialHTML = $('#btn-join-room').html();
+
+    $('#btn-join-room').html('Please wait...').prop('disabled', true);
+    connection.extra.userNames = "";
+    connection.checkPresence(roomid, function(isRoomExist) {
+        if (isRoomExist === false) {
+           connection.sessionid = roomid;
+           connection.isInitiator = true;
+           $('#joinRoomModel').modal('hide');
+           openCanvasDesigner();
+        }
+           
+        else{
+          connection.sessionid = roomid;
+          connection.isInitiator = false;
+          $('#joinRoomModel').modal('hide');
+          openCanvasDesigner();
+        }
+        $('#btn-join-room').html(initialHTML).prop('disabled', false);
+    })
+}
+
+// Open a new window or display a pop-up regarding the webpage
+function openCanvasDesigner() {
+    $('#startRoomModel').modal('hide');
+    var href = location.href.replace('/user.html', '/') + 'canvas-designer.html?open=' + connection.isInitiator + '&sessionid=' + connection.sessionid + '&publicRoomIdentifier=' + connection.publicRoomIdentifier + '&userFullName=' + connection.extra.userFullName + '&password=' + connection.password;
+    
+    var newWin = window.open(href);
+    if (!newWin || newWin.closed || typeof newWin.closed == 'undefined') {
+        var html = '';
+        html += '<p>Please click following link:</p>';
+        html += '<p><a href="' + href + '" target="_blank">';
+        if(connection.isInitiator) {
+          html += 'Click To Open The Room';
+        }
+        else {
+          html += 'Click To Join The Room';
+        }
+        html += '</a></p>';
+        alertBox(html, 'Popups Are Blocked');
+    }
+}
+
+function alertBox(message, title, specialMessage, callback) {
+    callback = callback || function() {};
+
+    $('.btn-alert-close').unbind('click').bind('click', function(e) {
+        e.preventDefault();
+        $('#alert-box').modal('hide');
+        $('#confirm-box-topper').hide();
+
+        callback();
+    });
+
+    $('#alert-title').html(title || 'Alert');
+    $('#alert-special').html(specialMessage || '');
+    $('#alert-message').html(message);
+    $('#confirm-box-topper').show();
+
+    $('#alert-box').modal({
+        backdrop: 'static',
+        keyboard: false
+    });
+}
+
+function confirmBox(message, callback) {
+    $('#btn-confirm-action').html('Confirm').unbind('click').bind('click', function(e) {
+        e.preventDefault();
+        $('#confirm-box').modal('hide');
+        $('#confirm-box-topper').hide();
+        callback(true);
+    });
+
+    $('#btn-confirm-close').html('Cancel');
+
+    $('.btn-confirm-close').unbind('click').bind('click', function(e) {
+        e.preventDefault();
+        $('#confirm-box').modal('hide');
+        $('#confirm-box-topper').hide();
+        callback(false);
+    });
+
+    $('#confirm-message').html(message);
+    $('#confirm-title').html('Please Confirm');
+    $('#confirm-box-topper').show();
+
+    $('#confirm-box').modal({
+        backdrop: 'static',
+        keyboard: false
+    });
+}
+
+$('#chk-room-password').change(function() {
+  $('#txt-room-password').parent().css('display', this.checked === true ? 'block' : 'none');
+  $('#txt-room-password').focus();
+});
+
+var txtRoomId = document.getElementById('txt-roomid');
+
+txtRoomId.onkeyup = txtRoomId.onblur = txtRoomId.oninput = txtRoomId.onpaste = function() {
+    localStorage.setItem('canvas-designer-roomid', txtRoomId.value);
+};
+
+if (localStorage.getItem('canvas-designer-roomid')) {
+    txtRoomId.value = localStorage.getItem('canvas-designer-roomid');
+    $('#txt-roomid-join').val(txtRoomId.value);
+}
+
+var userFullName = document.getElementById('txt-user-name');
+
+userFullName.onkeyup = userFullName.onblur = userFullName.oninput = userFullName.onpaste = function() {
+    localStorage.setItem('canvas-designer-user-full-name', userFullName.value);
+};
+
+if (localStorage.getItem('canvas-designer-user-full-name')) {
+    userFullName.value = localStorage.getItem('canvas-designer-user-full-name');
+    $('#txt-user-name-join').val(userFullName.value);
+}
+</script>
+</body>
+</html>
