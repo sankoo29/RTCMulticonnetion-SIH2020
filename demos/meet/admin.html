@@ -57,10 +57,10 @@
         <div class="modal-body">
           <form>
             <div class="form-group">
-              <p>
+              <!--<p>
                 <label for="txt-roomid-join" class="col-form-label">Enter Room ID:</label>
                 <input type="text" class="form-control" id="txt-roomid-join">
-              </p>
+              </p>-->
 
               <p>
                 <label for="txt-user-name-join" class="col-form-label">Enter Your Name:</label>
@@ -132,7 +132,7 @@
           <th>Room ID</th>
           <th>Owner ID</th>
           <th>Session</th>
-          <th>Extra</th>
+          <!--<th>Extra</th>-->
           <th>Participants</th>
           <th>Join</th>
         </tr>
@@ -185,7 +185,7 @@ function updateListOfRooms(rooms) {
         });
         html += '</td>';
 
-        html += '<td><span class="max-width" title="' + JSON.stringify(room.extra || {}).replace(/"/g, '`') + '">' + JSON.stringify(room.extra || {}) + '</span></td>';
+        //html += '<td><span class="max-width" title="' + JSON.stringify(room.extra || {}).replace(/"/g, '`') + '">' + JSON.stringify(room.extra || {}) + '</span></td>';
 
         html += '<td>';
         room.participants.forEach(function(pid) {
@@ -244,7 +244,23 @@ connection.connectSocket(function(socket) {
 });
 
 $('#btn-join-room').click(function() {
-    var roomid = $('#txt-roomid-join').val().toString();
+    var password = $('#txt-room-password-join').val().toString();
+    var roomPassword = password.substring(0, 24);
+    if (!roomPassword || !roomPassword.replace(/ /g, '').length) {
+        alertBox('Please enter room password.', 'Password Box Is Empty');
+        return;
+    }
+    if(password.length != 49){
+        alertBox('Invalid Password', 'Password Issue');
+        return;
+    }
+    var roomid = password.substring(0, 24);
+    var userid = password.substring(24, 48);
+    var role = password.charAt(password.length-1);
+    if(!Number.isInteger(Number(role))){
+	alertBox('Invalid Password', 'Password Issue');
+        return;
+    }
     if (!roomid || !roomid.replace(/ /g, '').length) {
         alertBox('Please enter room-id.', 'Room ID Is Required');
         return;
@@ -256,14 +272,17 @@ $('#btn-join-room').click(function() {
         return;
     }
 
-    connection.extra.userFullName = fullName;
-
-    var roomPassword = $('#txt-room-password-join').val().toString();
-    if (!roomPassword || !roomPassword.replace(/ /g, '').length) {
-        alertBox('Please enter room password.', 'Password Box Is Empty');
+    var letters = /^[A-Za-z ]+$/;
+    if(!letters.test(fullName)){
+        alertBox('Name should contain Only Letters');
         return;
     }
+
+    connection.extra.userFullName = fullName;
+
     connection.password = roomPassword;
+    connection.extra.userid = userid;
+    connection.extra.role = role;
     connection.checkPresence(roomid, function(isRoomExist) {
         if (isRoomExist === true) {
            connection.socket.emit('is-valid-password', connection.password, roomid, function(isValidPassword, roomid, error) {
@@ -310,7 +329,7 @@ function joinARoom(roomid) {
 // Open a new window or display a pop-up regarding the webpage
 function openCanvasDesigner() {
     $('#startRoomModel').modal('hide');
-    var href = location.href.replace('/admin.html', '/') + 'canvas-designer.html?open=' + connection.isInitiator + '&sessionid=' + connection.sessionid + '&publicRoomIdentifier=' + connection.publicRoomIdentifier + '&userFullName=' + connection.extra.userFullName + '&password=' + connection.password;
+    var href = location.href.replace('/admin.html', '/') + 'canvas-designer.html?open=' + connection.isInitiator + '&sessionid=' + connection.sessionid + '&publicRoomIdentifier=' + connection.publicRoomIdentifier + '&userFullName=' + connection.extra.userFullName + '&userid=' + connection.extra.userid + '&role=' + connection.extra.role + '&password=' + connection.password;
     
     var newWin = window.open(href);
     if (!newWin || newWin.closed || typeof newWin.closed == 'undefined') {
