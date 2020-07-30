@@ -13,13 +13,13 @@
 
   <script src="/demos/js/jquery.min.js"></script>
   <link href="/demos/css/bootstrap.min.css" rel="stylesheet">
-  <script src="/node_modules/webrtc-adapter/out/adapter.js"></script>
+  <script src="https://rtcmulticonnection.herokuapp.com/node_modules/webrtc-adapter/out/adapter.js"></script>
 <script src="https://rtcmulticonnection.herokuapp.com/socket.io/socket.io.js"></script>
 <script src="https://rtcmulticonnection.herokuapp.com/dist/RTCMultiConnection.min.js"></script>
-  <script src="/node_modules/fbr/FileBufferReader.js"></script>
+  <script src="https://rtcmulticonnection.herokuapp.com/node_modules/fbr/FileBufferReader.js"></script>
 
-  <script src="/node_modules/canvas-designer/dev/webrtc-handler.js"></script>
-  <script src="/node_modules/canvas-designer/canvas-designer-widget.js"></script>
+  <script src="https://rtcmulticonnection.herokuapp.com/node_modules/canvas-designer/dev/webrtc-handler.js"></script>
+  <script src="https://rtcmulticonnection.herokuapp.com/node_modules/canvas-designer/canvas-designer-widget.js"></script>
   <script src="/demos/js/emojionearea.min.js"></script>
   <!-- <script src="/node_modules/multistreamsmixer/MultiStreamsMixer.js"></script> -->
 
@@ -381,8 +381,8 @@ connection.maxParticipantsAllowed = 1000;
 var designer = new CanvasDesigner();
 
 // you can place widget.html anywhere
-designer.widgetHtmlURL = '/node_modules/canvas-designer/widget.html';
-designer.widgetJsURL = '/node_modules/canvas-designer/widget.min.js'
+designer.widgetHtmlURL = 'https://rtcmulticonnection.herokuapp.com/node_modules/canvas-designer/widget.html';
+designer.widgetJsURL = 'https://rtcmulticonnection.herokuapp.com/node_modules/canvas-designer/widget.min.js'
 
 designer.addSyncListener(function(data) {
     connection.send(data);
