@@ -336,8 +336,8 @@ function isAttendee() {
 // WEB-RTC CODE STARTS FROM HERE
 var connection = new RTCMultiConnection();
 
-connection.socketURL = '/';
-// connection.socketURL = 'https://rtcmulticonnection.herokuapp.com:443/';
+//connection.socketURL = '/';
+ connection.socketURL = 'https://rtcmulticonnection.herokuapp.com:443/';
 
 connection.extra.userFullName = params.userid;
 
