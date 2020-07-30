@@ -110,9 +110,9 @@ var publicRoomIdentifier = 'meet';
 
 var connection = new RTCMultiConnection();
 
-connection.socketURL = '/';
+//connection.socketURL = '/';
 //location.href.replace('/admin.html', '/')
-//connection.socketURL = 'https://rtcmulticonnection.herokuapp.com:443/';
+connection.socketURL = 'https://rtcmulticonnection.herokuapp.com:443/';
 
 /// make this room public
 connection.publicRoomIdentifier = publicRoomIdentifier;
