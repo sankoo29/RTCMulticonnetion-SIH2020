@@ -20,6 +20,7 @@
 
   <script src="https://rtcmulticonnection.herokuapp.com/node_modules/canvas-designer/dev/webrtc-handler.js"></script>
   <script src="https://rtcmulticonnection.herokuapp.com/node_modules/canvas-designer/canvas-designer-widget.js"></script>
+
   <script src="/demos/js/emojionearea.min.js"></script>
   <!-- <script src="/node_modules/multistreamsmixer/MultiStreamsMixer.js"></script> -->
 
@@ -87,35 +88,18 @@ input[disabled], button[disabled] {
     border-radius: 3px;
 }
 
-#txt-chat-message {
+/*#txt-chat-message {
     width: 100%;
     resize: vertical;
     margin: 5px;
     margin-right: 0;
     min-height: 30px;
 }
-
+*/
 #btn-chat-message {
     margin: 5px;
 }
 
-#conversation-panel {
-    margin-bottom: 20px;
-    text-align: left;
-    max-height: 200px;
-    overflow: auto;
-    border-top: 1px solid #E5E5E5;
-    width: 106%;
-}
-
-#conversation-panel .message {
-    border-bottom: 1px solid #E5E5E5;
-    padding: 5px 10px;
-}
-
-#conversation-panel .message img, #conversation-panel .message video, #conversation-panel .message iframe {
-    max-width: 100%;
-}
 
 #main-video {
     width: 100%;
@@ -128,13 +112,6 @@ hr {
     height: 1px;
     border: 0;
     background: #E5E5E5;
-}
-
-#btn-attach-file {
-    width: 25px;
-    vertical-align: middle;
-    cursor: pointer;
-    display: none;
 }
 
 #btn-share-screen {
@@ -167,7 +144,7 @@ hr {
         <div class="collapse navbar-collapse mr-5" id="navbarSupportedContent">
          <a href="#" class="navbar-brand ml-5" style="color:white">Online Judiciary System</a>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="responsive-navbar-nav" aria-expanded="false" aria-label="Toggle navigation">
-          	<span class="navbar-toggler-icon"></span>
+            <span class="navbar-toggler-icon"></span>
           </button>
           </div>
         </nav>
@@ -175,12 +152,10 @@ hr {
     </div>
 
 <!--------------------------------------------------THE MAIN PAGE------------------------------------------------------>
-<div class="wrapper container" >
-
 <article>
 
 <div id="attendeeControl">  
-    <div id="share-screen-region-video" style="position: absolute;bottom: 0;right: 0;left: 20%;height: 90%;border: 1px solid black; border-top:0; border-bottom: 0; display: block">
+    <div id="share-screen-region-video" style="position: absolute; bottom: 0;right: 0;left: 20%;height: 90%;border: 1px solid black; border-top:0; border-bottom: 0; display: block">
     <div id="other-videos"></div>
     </div>
 
@@ -191,56 +166,74 @@ hr {
 
     <video id="screen-viewer" controls playsinline autoplay></video>
 
-    <div style="width: 20%; height: 100%; position: absolute;left:0;">
+    <div style="width: 20%; height: 100%; position: absolute;left:0; background-color: ">
         <video id="main-video" controls playsinline autoplay ></video>
         <!--<div id="side-panel-other-video" style="display: block"><div id="other-videos"></div></div>-->
-        <hr>
+        <link rel="stylesheet" type="text/css" href="./buttons.css">
+
+        <input type="button" class="btn-new third" id="btn-show-panel" value="Hide Panel" style="display: none">
+        <input type="button" class="btn-new third" id="btn-mute" value="Mute">
+        <input type="button" class="btn-new third" id="btn-hide-video" value="Hide Video">
+        <input type="button" class="btn-new third" id="btn-hide-video" value="Share Screen" style="display: none">
+
+        <hr style="background-color: black">
+
         <!-- Shows active users -->
         <!-- <div style="padding: 5px 10px;">
             <div id="onUserStatusChanged"></div>
         </div> -->
 
         <!-- Notepad starts-->
-          <form name="controls" id="notepad" style="display: none">
-
-            <input class="btn btn-secondary" type="button" id="bold" value="B" style="margin-left: 3%; margin-bottom: 1%; font-weight: bold;" size="28">
-            <input class="btn btn-secondary" type="button" id="italic" value="I" style="margin-left: 1%; margin-bottom: 1%; font-style: italic;" size="30">
-            <input class="btn btn-secondary" type="button" id="underline" value="U" style="margin-left: 1%; margin-bottom: 1%; text-decoration: underline" size="8">
-            <input class="btn btn-secondary" type="reset" style="margin-left: 1%; margin-bottom: 1%; " value="clear">
-            <input class="btn btn-secondary" type="button" id="download" value="Download">
+          <div id="notepad" style="display: none">
+            <div class="btngroup" style="margin-left: 2%; margin-bottom: 2%;">
+                <input class="btngroup--btn" type="button" id="bold" value="B" style="font-weight: bold;" size="28">
+                <input class="btngroup--btn" type="button" id="italic" value="I" style="font-style: italic;" size="30">
+                <input class="btngroup--btn" type="button" id="underline" value="U" style="text-decoration: underline" size="8">
+                <input class="btngroup--btn" type="reset" value="clear">
+                <input class="btngroup--btn" type="button" id="download" value="Download">
+            </div>
             <a href="" style="display: none;" id="download_link">Download Notes</a>
 
-            <br/><textarea style="margin-left:3%; margin-right:3%; width:94%; height: 182px" id="output" name="output" rows="9" wrap="virtual" cols=48></textarea><br>
+            <br><textarea id="output" class="notepad"></textarea><br>
 
-          </form>
-          <hr>
+          </div>
 
         <!-- Notepad ends -->
-        <div style="margin-top: 20px;position: absolute;bottom: 0;background: white; padding-bottom: 20px; width: 94%">
-            <!-- Chat room starts -->
-            <div id="conversation-panel" style="display: none"></div>
-            <div id="key-press" style="text-align: right; display: none; font-size: 11px;">
-                <span style="vertical-align: middle;"></span>
-                <img src="https://www.webrtc-experiment.com/images/key-press.gif" style="height: 12px; vertical-align: middle;">
-            </div>
-            <textarea id="txt-chat-message"></textarea>
-
-            <!-- Chat room ends -->
-            <input type="button" class="btn btn-primary" id="btn-chat-message" value="Send" disabled style="display: none">
-            <input type="button" class="btn btn-primary" id="btn-show-panel" value="Hide Panel" style="display: none">
-            <input type="button" class="btn btn-primary" id="btn-mute" value="Mute">
-            <input type="button" class="btn btn-primary" id="btn-hide-video" value="Hide Video">
-
-            <img id="btn-attach-file" src="https://www.webrtc-experiment.com/images/attach-file.png" title="Attach a File" style="display: none">
-            <img id="btn-share-screen" src="https://www.webrtc-experiment.com/images/share-screen.png" title="Share Screen" style="display: none">
+        <div style="margin-top: 1%;position: absolute; background: white; margin-left: 2%;">
+            <h5>Participants</h5>
+            <div id="participants-of-room"></div>
         </div>
+
+        <!-- Chat room Window -->
+        <link rel="stylesheet" type="text/css" href="./chatroom.css">
+        <div class="chatbox-holder">
+          <div class="chatbox chatbox-min">
+            <div class="chatbox-top">
+              <div class="chat-partner-name">
+                <a target="_blank" href="#">Chat Room</a>
+              </div>
+              <div class="chatbox-icons">
+                <a href="javascript:void(0);"><i class="fa fa-minus"></i></a>
+              </div>      
+            </div>
+            
+            <div class="chat-messages" id="chat-messages"></div>
+            
+            <div class="chat-input-holder">
+              <textarea class="chat-input" id="txt-chat-message" style="display: block"></textarea>
+              <button id="btn-send-file" style="border: 0px"><img src="./attachmenticon.png" height="20px;"></button>
+              <input type="button" value="Send" class="message-send" id="btn-chat-message">
+            </div>
+          </div>
+        </div>
+        <!-- Chat room window ends-->
 
         <canvas id="temp-stream-canvas" style="display: none;"></canvas>
     </div>
 </div>
 </article>
-</div>
 <script>
+
 (function() {
     var params = {},
         r = /([^&=]+)=?([^&]*)/g;
@@ -256,13 +249,11 @@ hr {
     var user_role = params.role
     if (user_role == 0 || user_role == 1) {
         document.getElementById("notepad").style.display = "inline-block";
-        document.getElementById("conversation-panel").style.display = "inline-block";
         document.getElementById("btn-chat-message").style.display = "inline-block";
         document.getElementById("btn-show-panel").style.display = "inline-block";
-        document.getElementById("btn-share-screen").style.display = "inline-block";
+        //document.getElementById("btn-share-screen").style.display = "inline-block";
     }
     else if (user_role == 2) {
-        document.getElementById("conversation-panel").style.display = "inline-block";
         document.getElementById("btn-chat-message").style.display = "inline-block";
         document.getElementById("btn-show-panel").style.display = "inline-block";
         document.getElementById("widget-container").style.pointerEvents = "none";
@@ -272,7 +263,14 @@ hr {
         document.getElementById("widget-container").style.display = "none";
     }
 
+    document.getElementById("txt-chat-message").style.display = "inline-block"
 })();
+
+$(function(){
+  $('.fa-minus').click(function(){    $(this).closest('.chatbox').toggleClass('chatbox-min');
+  });
+});
+
 
 // Notes section starts from here
 document.getElementById("bold").onclick = function() {
@@ -378,6 +376,7 @@ connection.maxParticipantsAllowed = 1000;
 // connection.maxParticipantsAllowed = 2;
 
 // here goes canvas designer
+
 var designer = new CanvasDesigner();
 
 // you can place widget.html anywhere
@@ -462,20 +461,48 @@ connection.sdpConstraints.mandatory = {
 };
 
 // To get the Active Users in the room
+// connection.onUserStatusChanged = function(event) {
+//     //var infoBar = document.getElementById('onUserStatusChanged');
+//     var names = [];
+//     connection.getAllParticipants().forEach(function(pid) {
+//         console.log(pid)
+//         names.push(getFullName(pid));
+//     });
+
+//     if (!names.length) {
+//         names = ['Only You'];
+//     } else {
+//         names = [connection.extra.userFullName || 'You'].concat(names);
+//     }
+
+//     //infoBar.innerHTML = '<b>Active users:</b> ' + names.join(', ');
+// };
+
 connection.onUserStatusChanged = function(event) {
-    //var infoBar = document.getElementById('onUserStatusChanged');
-    var names = [];
+    var table = "<table class='table table-bordered'>"
     connection.getAllParticipants().forEach(function(pid) {
         console.log(pid)
-        names.push(getFullName(pid));
+        if (connection.peers[pid] && connection.peers[pid].extra.role != 3) {
+            var title = "<td>"
+            if (connection.peers[pid].extra.role == 0) {
+                title += "Judge</td>"
+            }
+            else if (connection.peers[pid].extra.role == 1) {
+                title += "Lawyers</td>"
+            }
+            else if (connection.peers[pid].extra.role == 2) {
+                title += "Others</td>"
+            }
+            var cell = "<td>" + connection.peers[pid].extra.userFullName + "</td>"
+
+            var row = "<tr>" + title + cell + "</tr>"
+            table += row
+        }
+        table += "</table>"
+
     });
-
-    if (!names.length) {
-        names = ['Only You'];
-    } else {
-        names = [connection.extra.userFullName || 'You'].concat(names);
-    }
-
+    var p = document.getElementById("participants-of-room")
+    p.innerHTML = table
     //infoBar.innerHTML = '<b>Active users:</b> ' + names.join(', ');
 };
 
@@ -483,7 +510,6 @@ connection.onUserStatusChanged = function(event) {
 // To sync the drawings
 // To prevent duplicate users in the same room
 connection.onopen = function(event) {
-    connection.onUserStatusChanged(event);
 
     var flag = 0;
     var allParticipants = connection.getAllParticipants()
@@ -502,6 +528,8 @@ connection.onopen = function(event) {
         });
     }
 
+    connection.onUserStatusChanged(event);
+
     if (designer.pointsLength <= 0) {
         // make sure that remote user gets all drawings synced.
         setTimeout(function() {
@@ -510,7 +538,6 @@ connection.onopen = function(event) {
     }
 
     document.getElementById('btn-chat-message').disabled = false;
-    document.getElementById('btn-attach-file').style.display = 'inline-block';
     document.getElementById('btn-share-screen').style.display = 'inline-block';
 };
 
@@ -534,16 +561,6 @@ connection.onmessage = function(event) {
     if(event.data.hideMainVideo) {
         // $('#main-video').hide();
         $('#screen-viewer').hide();
-        return;
-    }
-
-    if(event.data.typing === true) {
-        $('#key-press').show().find('span').html(event.extra.userFullName + ' is typing');
-        return;
-    }
-
-    if(event.data.typing === false) {
-        $('#key-press').hide().find('span').html('');
         return;
     }
 
@@ -623,15 +640,24 @@ connection.onstreamended = function(event) {
     }
 };
 
-var conversationPanel = document.getElementById('conversation-panel');
+var chatroom = document.getElementById('chat-messages')
 
 function appendChatMessage(event, checkmark_id) {
-    var div = document.createElement('div');
+    var holder = document.createElement('div');
 
-    div.className = 'message';
+    holder.className = 'message-box-holder';
 
     if (event.data) {
-        div.innerHTML = '<b>' + (event.extra.userFullName || event.userid) + ':</b><br>' + event.data.chatMessage;
+        var sender = document.createElement('div')
+        sender.className = "message-sender"
+        sender.innerHTML = event.extra.userFullName
+
+        var message = document.createElement('div')
+        message.className = "message-partner"
+        message.innerHTML = event.data.chatMessage
+
+        holder.appendChild(sender)
+        holder.appendChild(message)
 
         if (event.data.checkmark_id) {
             connection.send({
@@ -640,71 +666,17 @@ function appendChatMessage(event, checkmark_id) {
             });
         }
     } else {
-        div.innerHTML = '<b>You:</b> <img class="checkmark" id="' + checkmark_id + '" title="Received" src="https://www.webrtc-experiment.com/images/checkmark.png"><br>' + event;
-        div.style.background = '#cbffcb';
+        var message = document.createElement('div')
+        message.className = "message-box"
+        message.innerHTML = event
+
+        holder.appendChild(message)
     }
 
-    conversationPanel.appendChild(div);
+    chatroom.appendChild(holder);
 
-    conversationPanel.scrollTop = conversationPanel.clientHeight;
-    conversationPanel.scrollTop = conversationPanel.scrollHeight - conversationPanel.scrollTop;
+    console.log(chatroom)
 }
-
-var keyPressTimer;
-var numberOfKeys = 0;
-$('#txt-chat-message').emojioneArea({
-    pickerPosition: "top",
-    filtersPosition: "bottom",
-    tones: false,
-    autocomplete: true,
-    inline: true,
-    hidePickerOnBlur: true,
-    events: {
-        focus: function() {
-            $('.emojionearea-category').unbind('click').bind('click', function() {
-                $('.emojionearea-button-close').click();
-            });
-        },
-        keyup: function(e) {
-            var chatMessage = $('.emojionearea-editor').html();
-            if (!chatMessage || !chatMessage.replace(/ /g, '').length) {
-                connection.send({
-                    typing: false
-                });
-            }
-
-
-            clearTimeout(keyPressTimer);
-            numberOfKeys++;
-
-            if (numberOfKeys % 3 === 0) {
-                connection.send({
-                    typing: true
-                });
-            }
-
-            keyPressTimer = setTimeout(function() {
-                connection.send({
-                    typing: false
-                });
-            }, 1200);
-        },
-        blur: function() {
-            // $('#btn-chat-message').click();
-            connection.send({
-                typing: false
-            });
-        }
-    }
-});
-
-window.onkeyup = function(e) {
-    var code = e.keyCode || e.which;
-    if (code == 13) {
-        $('#btn-chat-message').click();
-    }
-};
-
 
 document.getElementById('btn-show-panel').onclick = function() {
     var canvas = document.getElementById("share-screen-region-canvas");
@@ -726,13 +698,16 @@ document.getElementById('btn-show-panel').onclick = function() {
 
 
 document.getElementById('btn-chat-message').onclick = function() {
-    var chatMessage = $('.emojionearea-editor').html();
-    $('.emojionearea-editor').html('');
+    // var chatMessage = $('.emojionearea-editor').html();
+    // $('.emojionearea-editor').html('');
+
+    var chatMessage = document.getElementById("txt-chat-message").value;
 
     if (!chatMessage || !chatMessage.replace(/ /g, '').length) return;
 
     var checkmark_id = connection.userid + connection.token();
 
+    console.log(chatMessage)
     appendChatMessage(chatMessage, checkmark_id);
 
     connection.send({
@@ -746,7 +721,8 @@ document.getElementById('btn-chat-message').onclick = function() {
 };
 
 var recentFile;
-document.getElementById('btn-attach-file').onclick = function() {
+
+document.getElementById('btn-send-file').onclick = function() {
     var file = new FileSelector();
     file.selectSingleFile(function(file) {
         recentFile = file;
@@ -758,19 +734,6 @@ document.getElementById('btn-attach-file').onclick = function() {
     });
 };
 
-function getFileHTML(file) {
-    var url = file.url || URL.createObjectURL(file);
-    var attachment = '<a href="' + url + '" target="_blank" download="' + file.name + '">Download: <b>' + file.name + '</b></a>';
-    if (file.name.match(/\.jpg|\.png|\.jpeg|\.gif/gi)) {
-        attachment += '<br><img crossOrigin="anonymous" src="' + url + '">';
-    } else if (file.name.match(/\.wav|\.mp3/gi)) {
-        attachment += '<br><audio src="' + url + '" controls></audio>';
-    } else if (file.name.match(/\.pdf|\.js|\.txt|\.sh/gi)) {
-        attachment += '<iframe class="inline-iframe" src="' + url + '"></iframe></a>';
-    }
-    return attachment;
-}
-
 function getFullName(userid) {
     var _userFullName = userid;
     if (connection.peers[userid] && connection.peers[userid].extra.userFullName) {
@@ -780,12 +743,14 @@ function getFullName(userid) {
 }
 
 connection.onFileEnd = function(file) {
-    var html = getFileHTML(file);
-    var div = progressHelper[file.uuid].div;
+    var url = file.url || URL.createObjectURL(file);
+    var html = '<a href="' + url + '" target="_blank" download="' + file.name + '">' + file.name + '</a>';
+    var div = progressHelper[file.uuid].div.childNodes;
+    console.log(div)
+    div = div[0]
 
     if (file.userid === connection.userid) {
-        div.innerHTML = '<b>You:</b><br>' + html;
-        div.style.background = '#cbffcb';
+        div.innerHTML = html;
 
         if(recentFile) {
             recentFile.userIndex++;
@@ -801,7 +766,7 @@ connection.onFileEnd = function(file) {
             recentFile = null;
         }
     } else {
-        div.innerHTML = '<b>' + getFullName(file.userid) + ':</b><br>' + html;
+        div.innerHTML = html;
     }
 };
 
@@ -817,33 +782,66 @@ connection.onFileProgress = function(chunk, uuid) {
 };
 
 connection.onFileStart = function(file) {
-    var div = document.createElement('div');
-    div.className = 'message';
+    var holder = document.createElement('div')
+    holder.className = 'message-box-holder'
+
+    var message = document.createElement('div')
+    console.log(message)
 
     if (file.userid === connection.userid) {
         var userFullName = file.remoteUserId;
         if(connection.peersBackup[file.remoteUserId]) {
             userFullName = connection.peersBackup[file.remoteUserId].extra.userFullName;
         }
-
-        div.innerHTML = '<b>You (to: ' + userFullName + '):</b><br><label>0%</label> <progress></progress>';
-        div.style.background = '#cbffcb';
+        
+        message.innerHTML = '<label>0%</label> <progress></progress>';
+        message.className = 'message-box'
     } else {
-        div.innerHTML = '<b>' + getFullName(file.userid) + ':</b><br><label>0%</label> <progress></progress>';
+        message.innerHTML = '<label>0%</label> <progress></progress>';
+        message.className = 'message-partner'
     }
 
-    div.title = file.name;
-    conversationPanel.appendChild(div);
+    console.log(message)
+    message.title = file.name
+    holder.appendChild(message)
+    chatroom.appendChild(holder)
+
     progressHelper[file.uuid] = {
-        div: div,
-        progress: div.querySelector('progress'),
-        label: div.querySelector('label')
+        div: holder,
+        progress: message.querySelector('progress'),
+        label: message.querySelector('label')
     };
     progressHelper[file.uuid].progress.max = file.maxChunks;
+}
 
-    conversationPanel.scrollTop = conversationPanel.clientHeight;
-    conversationPanel.scrollTop = conversationPanel.scrollHeight - conversationPanel.scrollTop;
-};
+// connection.onFileStart = function(file) {
+//     var div = document.createElement('div');
+//     div.className = 'message';
+
+//     if (file.userid === connection.userid) {
+//         var userFullName = file.remoteUserId;
+//         if(connection.peersBackup[file.remoteUserId]) {
+//             userFullName = connection.peersBackup[file.remoteUserId].extra.userFullName;
+//         }
+
+//         div.innerHTML = '<label>0%</label> <progress></progress>';
+//         div.style.background = '#cbffcb';
+//     } else {
+//         div.innerHTML = '<label>0%</label> <progress></progress>';
+//     }
+
+//     div.title = file.name;
+//     conversationPanel.appendChild(div);
+//     progressHelper[file.uuid] = {
+//         div: div,
+//         progress: div.querySelector('progress'),
+//         label: div.querySelector('label')
+//     };
+//     progressHelper[file.uuid].progress.max = file.maxChunks;
+
+//     conversationPanel.scrollTop = conversationPanel.clientHeight;
+//     conversationPanel.scrollTop = conversationPanel.scrollHeight - conversationPanel.scrollTop;
+// };
 
 function updateLabel(progress, label) {
     if (progress.position == -1) return;
