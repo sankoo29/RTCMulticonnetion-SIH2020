@@ -57,7 +57,7 @@
 
 <!-- <script src="/dist/RTCMultiConnection.min.js"></script> -->
 <script src="https://rtcmulticonnection.herokuapp.com/dist/RTCMultiConnection.min.js"></script>
-<script src="/node_modules/webrtc-adapter/out/adapter.js"></script>
+<script src="https://rtcmulticonnection.herokuapp.com/node_modules/webrtc-adapter/out/adapter.js"></script>
 <!-- <script src="/socket.io/socket.io.js"></script> -->
 <script src="https://rtcmulticonnection.herokuapp.com/socket.io/socket.io.js"></script>
 
@@ -65,7 +65,7 @@
 <link rel="stylesheet" href="/dev/getHTMLMediaElement.css">
 <script src="/dev/getHTMLMediaElement.js"></script>
 
-<script src="/node_modules/recordrtc/RecordRTC.js"></script>
+<script src="https://rtcmulticonnection.herokuapp.com/node_modules/recordrtc/RecordRTC.js"></script>
 <script>
 // ......................................................
 // ................Open/Join Functions...................
@@ -102,8 +102,38 @@ document.getElementById('join-room').onclick = function() {
 };*/
 
 document.getElementById('open-or-join-room').onclick = function() {
+
+    var password = $('#room-id').val().toString();
+    var roomPassword = password.substring(0, 24);
+    if (!roomPassword || !roomPassword.replace(/ /g, '').length) {
+        alertBox('Please enter room password.', 'Password Box Is Empty');
+        return;
+    }
+    if(password.length != 49){
+        alertBox('Invalid Password', 'Password Issue');
+        return;
+    }
+    var roomid = password.substring(0, 24);
+    var userid = password.substring(24, 48);
+    var role = password.charAt(password.length-1);
+    if(!Number.isInteger(Number(role))){
+  alertBox('Invalid Password', 'Password Issue');
+        return;
+    }
+    if (!roomid || !roomid.replace(/ /g, '').length) {
+        alertBox('Please enter room-id.', 'Room ID Is Required');
+        return;
+    }
+
+    connection.password = roomPassword;
+    connection.extra.userid = userid;
+    connection.extra.role = role;
+
+
+
+
     disableInputButtons();
-    connection.openOrJoin(document.getElementById('room-id').value, function(isRoomExist, roomid, error) {
+    connection.openOrJoin(roomid, function(isRoomExist, roomid, error) {
         if(error) {
           disableInputButtons(true);
           alert(error);
