@@ -19,7 +19,7 @@
         <div class="collapse navbar-collapse mr-5" id="navbarSupportedContent">
          <a href="#" class="navbar-brand ml-5" style="color:white">Online Judiciary System</a>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="responsive-navbar-nav" aria-expanded="false" aria-label="Toggle navigation">
-          	<span class="navbar-toggler-icon"></span>
+            <span class="navbar-toggler-icon"></span>
           </button>
           </div>
         </nav>
@@ -42,7 +42,7 @@
       <button id="btn-stop-recording" style="display: none;">Stop Recording</button>
       <br><br>-->
       <!-----------------------------------UI CODE TO OPEN/JOIN THE MEETING----------------------------------------------->
-	<label htmlFor="room-id">Room ID:</label><br>
+  <label htmlFor="room-id">Room ID:</label><br>
       <input type="text" id="room-id" class="form-control" placeholder="Copy the Room ID here" autocorrect=off autocapitalize=off size=20><br>
      <!-- <button id="open-room" class="btn btn-primary btn-block" placeholder="Copy the Room ID here">Open Room</button>
       <button id="join-room" class="btn btn-primary btn-block" placeholder="Copy the Room ID here">Join Room</button>-->
@@ -434,7 +434,7 @@ if (localStorage.getItem(connection.socketMessageEvent)) {
 }
 
 var txtRoomId = document.getElementById('room-id');
-txtRoomId.value = roomid;
+//txtRoomId.value = roomid;
 txtRoomId.onkeyup = txtRoomId.oninput = txtRoomId.onpaste = function() {
     localStorage.setItem(connection.socketMessageEvent, document.getElementById('room-id').value);
 };
@@ -450,7 +450,7 @@ if (!roomid && hashString.length) {
 }
 
 if (roomid && roomid.length) {
-    document.getElementById('room-id').value = roomid;
+    //document.getElementById('room-id').value = roomid;
     localStorage.setItem(connection.socketMessageEvent, roomid);
 
     // auto-join-room
