@@ -147,15 +147,17 @@ hr {
 <!--------------------------------------------------THE MAIN PAGE------------------------------------------------------>
 <article>
 
-<div id="attendeeControl">  
-    <div id="share-screen-region-video" style="position: absolute; bottom: 0;right: 0;left: 25%;height: 91%;border: 1px solid black; border-top:0; border-bottom: 0; display: block">
+<div id="attendeeControl">
+
+    <div id="share-screen-region-canvas" style="display:block">
+    <div id="widget-container" style="position: absolute;bottom: 0;right: 0;left: 25%;height: 91%;border: 1px solid black; border-top:0; border-bottom: 0; "></div>
+    </div>
+  
+    <div id="share-screen-region-video" style="position: absolute; bottom: 0;right: 0;left: 25%;height: 91%;border: 1px solid black; border-top:0; border-bottom: 0;">
     <div id="other-videos"></div>
     </div>
 
-    <div id="share-screen-region-canvas" style="none">
-    <div id="widget-container" style="position: absolute;bottom: 0;right: 0;left: 25%;height: 91%;border: 1px solid black; border-top:0; border-bottom: 0; "></div>
-    </div>
-
+    
 
     <video id="screen-viewer" controls playsinline autoplay></video>
 
@@ -165,7 +167,7 @@ hr {
         <link rel="stylesheet" type="text/css" href="./buttons.css">
 
         <div style="justify-content: center; padding-top:1px padding-bottom:1px">
-        <input type="button" class="btn-new third" id="btn-show-panel" value="Hide Panel" style="display: none" style="margin-top:5px">
+        <input type="button" class="btn-new third" id="btn-show-panel" value="Hide Canvas" style="display: none" style="margin-top:5px">
         <input type="button" class="btn-new third" id="btn-mute" value="Mute" style="margin-top:5px">
         <input type="button" class="btn-new third" id="btn-hide-video" value="Hide Video" style="margin-top:5px">
         <input type="button" class="btn-new third" id="btn-recording" value="Record" style="margin-top:5px">           
@@ -206,7 +208,7 @@ hr {
           <div class="chatbox chatbox-min">
             <div class="chatbox-top">
               <div class="chat-partner-name">
-                <a target="_blank" href="#">Chat Room</a>
+                <a target="_blank">Chat Room</a>
               </div>
               <div class="chatbox-icons">
                 <a href="javascript:void(0);"><i class="fa fa-minus"></i></a>
@@ -229,7 +231,9 @@ hr {
 </div>
 </article>
 <script>
-
+window.onload=function(){
+document.getElementById("btn-show-panel").click();
+};
 (function() {
     var params = {},
         r = /([^&=]+)=?([^&]*)/g;
@@ -237,11 +241,17 @@ hr {
     function d(s) {
         return decodeURIComponent(s.replace(/\+/g, ' '));
     }
+    
+
     var match, search = window.location.search;
     while (match = r.exec(search.substring(1)))
         params[d(match[1])] = d(match[2]);
     window.params = params;
 
+    //if(document.getElementById("share-screen-region-video").style.display = "none"){  
+    //    document.getElementById("share-screen-region-video").style.display = "block"
+    //	document.getElementById("share-screen-region-canvas").style.display = "none";
+    //}
     var user_role = params.role
     if (user_role == 0 || user_role == 1) {
         document.getElementById("notepad").style.display = "inline-block";
@@ -265,7 +275,6 @@ $(function(){
   $('.fa-minus').click(function(){    $(this).closest('.chatbox').toggleClass('chatbox-min');
   });
 });
-
 
 // Notes section starts from here
 document.getElementById("bold").onclick = function() {
@@ -333,6 +342,7 @@ var connection = new RTCMultiConnection();
  connection.socketURL = 'https://rtcmulticonnection.herokuapp.com:443/';
 
 connection.extra.userFullName = params.userid;
+connection.extra.userDisplayName = params.userFullName;
 
 /// make this room public
 connection.publicRoomIdentifier = params.publicRoomIdentifier;
@@ -474,30 +484,66 @@ connection.sdpConstraints.mandatory = {
 // };
 
 connection.onUserStatusChanged = function(event) {
-    var table = "<table class='table table-bordered'>"
+
+    var table = document.createElement('table');
+    table.className = "table table-bordered table-hover";
     connection.getAllParticipants().forEach(function(pid) {
         console.log(pid)
         if (connection.peers[pid] && connection.peers[pid].extra.role != 3) {
-            var title = "<td>"
-            if (connection.peers[pid].extra.role == 0) {
-                title += "Judge</td>"
-            }
-            else if (connection.peers[pid].extra.role == 1) {
-                title += "Lawyers</td>"
-            }
-            else if (connection.peers[pid].extra.role == 2) {
-                title += "Others</td>"
-            }
-            var cell = "<td>" + connection.peers[pid].extra.userFullName + "</td>"
+            var name = document.createElement("td")
+            var title = document.createElement("td")
+            var role = connection.peers[pid].extra.role
 
-            var row = "<tr>" + title + cell + "</tr>"
-            table += row
+            if (role == 0) {
+                title.innerHTML = "Judge"
+                name.innerHTML = connection.peers[pid].extra.userDisplayName
+            }
+            else if (role == 1) {
+                title.innerHTML = "Lawyer"
+                name.innerHTML = connection.peers[pid].extra.userDisplayName
+            }
+            else if (role == 2) {
+                title.innerHTML = "Others"
+                name.innerHTML = connection.peers[pid].extra.userDisplayName
+            }
+            var row = document.createElement("tr")
+            row.appendChild(title)
+            row.appendChild(name)
         }
-        table += "</table>"
-
+        table.appendChild(row)
     });
+
+    // var table = "<table class='table table-bordered'>"
+    // connection.getAllParticipants().forEach(function(pid) {
+    //     console.log(pid)
+    //     if (connection.peers[pid] && connection.peers[pid].extra.role != 3) {
+    //         var title = "<td>"
+    //         if (connection.peers[pid].extra.role == 0) {
+    //             title += "Judge</td>"
+    //         }
+    //         else if (connection.peers[pid].extra.role == 1) {
+    //             title += "Lawyers</td>"
+    //         }
+    //         else if (connection.peers[pid].extra.role == 2) {
+    //             title += "Others</td>"
+    //         }
+    //         var cell = "<td>" + connection.peers[pid].extra.userFullName + "</td>"
+
+    //         var row = "<tr>" + title + cell + "</tr>"
+    //         table += row
+    //     }
+    //     table += "</table>"
+
+    // });
+
     var p = document.getElementById("participants-of-room")
-    p.innerHTML = table
+    var oldtable = p.childNodes[0]
+    try {
+        p.removeChild(oldtable)
+    } catch (error) {
+        console.log(error)
+    }
+    p.appendChild(table)
     console.log(p)
     //infoBar.innerHTML = '<b>Active users:</b> ' + names.join(', ');
 };
@@ -516,12 +562,8 @@ connection.onopen = function(event) {
     }
 
     if (flag) {
-        connection.getAllParticipants().forEach(function(pid) {
-            connection.disconnectWith(pid);
-        });
-        connection.attachStreams.forEach(function(stream) {
-            stream.stop();
-        });
+        alert("Duplicate User detected!")
+        window.close()
     }
 
     connection.onUserStatusChanged(event);
@@ -533,7 +575,6 @@ connection.onopen = function(event) {
         }, 1000);
     }
 
-    document.getElementById('btn-chat-message').disabled = false;
 };
 
 connection.onclose = connection.onerror = connection.onleave = function(event) {
@@ -602,16 +643,13 @@ connection.onstream = function(event) {
 
         event.mediaElement.controls = false;
         event.mediaElement.muted = true;
-        console.log(event)
+        console.log(event.streamid)
         event.mediaElement.onclick = function(event) {
             var d = confirm("You sure you want to delete this peer?")
             // Needs work
             if (d == true) {
-                connection.disconnectWith(event.userid);
-                stream = connection.streamEvents.selectFirst({ userid: event.userid })
-                //connection.streamEvents[event.stream.id].stream.stop();
-                // var otherVideos = document.querySelector('#other-videos');
-                // othervideos.removeChild(event.mediaElement)
+                var videos = document.getElementById("other-videos")
+                videos.removeChild(event.target)
             }
         }
         otherVideos.appendChild(event.mediaElement);
@@ -645,7 +683,7 @@ function appendChatMessage(event, checkmark_id) {
     if (event.data) {
         var sender = document.createElement('div')
         sender.className = "message-sender"
-        sender.innerHTML = event.extra.userFullName
+        sender.innerHTML = event.extra.userDisplayName
 
         var message = document.createElement('div')
         message.className = "message-partner"
@@ -669,6 +707,9 @@ function appendChatMessage(event, checkmark_id) {
     }
 
     chatroom.appendChild(holder);
+ 
+    chatroom.scrollTop = chatroom.clientHeight;
+    chatroom.scrollTop = chatroom.scrollHeight - chatroom.scrollTop;
 
     console.log(chatroom)
 }
@@ -678,17 +719,18 @@ document.getElementById('btn-show-panel').onclick = function() {
     var big_video = document.getElementById("share-screen-region-video");
     //var side_video = document.getElementById("side-panel-other-video");
     
-    if (big_video.style.display === "block") {
-        big_video.style.display = "none";
-        //side_video.style.display = "block";
-        canvas.style.display = "block";
-        document.getElementById('btn-show-panel').value = "Hide Panel"
-    } else {
-        big_video.style.display = "block";
-        //side_video.style.display = "none";
+    if (canvas.style.display === "block") {
         canvas.style.display = "none";
-        document.getElementById('btn-show-panel').value = "Show Panel"
+        //side_video.style.display = "block";
+        big_video.style.display = "block";
+        document.getElementById('btn-show-panel').value = "Show Canvas"
+    } else {
+        canvas.style.display = "block";
+        //side_video.style.display = "none";
+        big_video.style.display = "none";
+        document.getElementById('btn-show-panel').value = "Hide Canvas"
     }
+    //alert("Clicked");
 }
 
 
@@ -697,6 +739,7 @@ document.getElementById('btn-chat-message').onclick = function() {
     // $('.emojionearea-editor').html('');
 
     var chatMessage = document.getElementById("txt-chat-message").value;
+    document.getElementById("txt-chat-message").value = ""
 
     if (!chatMessage || !chatMessage.replace(/ /g, '').length) return;
 
