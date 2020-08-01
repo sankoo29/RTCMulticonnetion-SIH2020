@@ -1,4 +1,4 @@
-﻿<!-- Demo version: 2018.12.11 -->
+<!-- Demo version: 2018.12.11 -->
 
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
@@ -13,13 +13,13 @@
 
   <script src="/demos/js/jquery.min.js"></script>
   <link href="/demos/css/bootstrap.min.css" rel="stylesheet">
-  <script src="https://rtcmulticonnection.herokuapp.com/node_modules/webrtc-adapter/out/adapter.js"></script>
-<script src="https://rtcmulticonnection.herokuapp.com/socket.io/socket.io.js"></script>
-<script src="https://rtcmulticonnection.herokuapp.com/dist/RTCMultiConnection.min.js"></script>
-  <script src="https://rtcmulticonnection.herokuapp.com/node_modules/fbr/FileBufferReader.js"></script>
+  <script src="https://rtcmulticonnection.herokuapp.com:443/node_modules/webrtc-adapter/out/adapter.js"></script>
+  <script src="https://rtcmulticonnection.herokuapp.com:443/dist/RTCMultiConnection.min.js"></script>
+  <script src="https://rtcmulticonnection.herokuapp.com:443/socket.io/socket.io.js"></script>
+  <script src="https://rtcmulticonnection.herokuapp.com:443/node_modules/fbr/FileBufferReader.js"></script>
 
-  <script src="https://rtcmulticonnection.herokuapp.com/node_modules/canvas-designer/dev/webrtc-handler.js"></script>
-  <script src="https://rtcmulticonnection.herokuapp.com/node_modules/canvas-designer/canvas-designer-widget.js"></script>
+  <script src="https://rtcmulticonnection.herokuapp.com:443/node_modules/canvas-designer/dev/webrtc-handler.js"></script>
+  <script src="https://rtcmulticonnection.herokuapp.com:443/node_modules/canvas-designer/canvas-designer-widget.js"></script>
 
   <script src="/demos/js/emojionearea.min.js"></script>
   <!-- <script src="/node_modules/multistreamsmixer/MultiStreamsMixer.js"></script> -->
@@ -77,15 +77,15 @@ input[disabled], button[disabled] {
 }
 
 #other-videos {
-    margin-top: 5px;
+    margin-left: 50px;
 }
 
 #other-videos video {
-    width: 45%;
-    margin: 5px;
+    width: 25%;
+    margin: 40px;
     border: 1px solid black;
     padding: 1px;
-    border-radius: 3px;
+    border-radius: 1px;
 }
 
 /*#txt-chat-message {
@@ -112,13 +112,6 @@ hr {
     height: 1px;
     border: 0;
     background: #E5E5E5;
-}
-
-#btn-share-screen {
-    width: 25px;
-    vertical-align: middle;
-    cursor: pointer;
-    display: none;
 }
 
 .checkmark {
@@ -155,26 +148,28 @@ hr {
 <article>
 
 <div id="attendeeControl">  
-    <div id="share-screen-region-video" style="position: absolute; bottom: 0;right: 0;left: 20%;height: 90%;border: 1px solid black; border-top:0; border-bottom: 0; display: block">
+    <div id="share-screen-region-video" style="position: absolute; bottom: 0;right: 0;left: 25%;height: 91%;border: 1px solid black; border-top:0; border-bottom: 0; display: block">
     <div id="other-videos"></div>
     </div>
 
     <div id="share-screen-region-canvas" style="none">
-    <div id="widget-container" style="position: absolute;bottom: 0;right: 0;left: 20%;height: 90%;border: 1px solid black; border-top:0; border-bottom: 0; "></div>
+    <div id="widget-container" style="position: absolute;bottom: 0;right: 0;left: 25%;height: 91%;border: 1px solid black; border-top:0; border-bottom: 0; "></div>
     </div>
 
 
     <video id="screen-viewer" controls playsinline autoplay></video>
 
-    <div style="width: 20%; height: 100%; position: absolute;left:0; background-color: ">
+    <div style="width: 25%; height: 100%; position: absolute;left:0; background-color: ">
         <video id="main-video" controls playsinline autoplay ></video>
         <!--<div id="side-panel-other-video" style="display: block"><div id="other-videos"></div></div>-->
         <link rel="stylesheet" type="text/css" href="./buttons.css">
 
-        <input type="button" class="btn-new third" id="btn-show-panel" value="Hide Panel" style="display: none">
-        <input type="button" class="btn-new third" id="btn-mute" value="Mute">
-        <input type="button" class="btn-new third" id="btn-hide-video" value="Hide Video">
-        <input type="button" class="btn-new third" id="btn-hide-video" value="Share Screen" style="display: none">
+        <div style="justify-content: center; padding-top:1px padding-bottom:1px">
+        <input type="button" class="btn-new third" id="btn-show-panel" value="Hide Panel" style="display: none" style="margin-top:5px">
+        <input type="button" class="btn-new third" id="btn-mute" value="Mute" style="margin-top:5px">
+        <input type="button" class="btn-new third" id="btn-hide-video" value="Hide Video" style="margin-top:5px">
+        <input type="button" class="btn-new third" id="btn-recording" value="Record" style="margin-top:5px">           
+        </div>
 
         <hr style="background-color: black">
 
@@ -184,8 +179,8 @@ hr {
         </div> -->
 
         <!-- Notepad starts-->
-          <div id="notepad" style="display: none">
-            <div class="btngroup" style="margin-left: 2%; margin-bottom: 2%;">
+          <div id="notepad" style="display: none width:25%">
+            <div class="btngroup" style="margin-left: 2%; margin-bottom: 2%; margin: 0 auto width:25%">
                 <input class="btngroup--btn" type="button" id="bold" value="B" style="font-weight: bold;" size="28">
                 <input class="btngroup--btn" type="button" id="italic" value="I" style="font-style: italic;" size="30">
                 <input class="btngroup--btn" type="button" id="underline" value="U" style="text-decoration: underline" size="8">
@@ -197,11 +192,12 @@ hr {
             <br><textarea id="output" class="notepad"></textarea><br>
 
           </div>
+            <hr style="background-color: black">
 
         <!-- Notepad ends -->
-        <div style="margin-top: 1%;position: absolute; background: white; margin-left: 2%;">
-            <h5>Participants</h5>
-            <div id="participants-of-room"></div>
+        <div id="other-participants" style="margin-left: 2%; margin-right: 2%; height: 20%; overflow-y: scroll">
+            <h6>Other Participants</h6>
+            <div id="participants-of-room"></div>           
         </div>
 
         <!-- Chat room Window -->
@@ -251,7 +247,6 @@ hr {
         document.getElementById("notepad").style.display = "inline-block";
         document.getElementById("btn-chat-message").style.display = "inline-block";
         document.getElementById("btn-show-panel").style.display = "inline-block";
-        //document.getElementById("btn-share-screen").style.display = "inline-block";
     }
     else if (user_role == 2) {
         document.getElementById("btn-chat-message").style.display = "inline-block";
@@ -380,8 +375,8 @@ connection.maxParticipantsAllowed = 1000;
 var designer = new CanvasDesigner();
 
 // you can place widget.html anywhere
-designer.widgetHtmlURL = 'https://rtcmulticonnection.herokuapp.com/node_modules/canvas-designer/widget.html';
-designer.widgetJsURL = 'https://rtcmulticonnection.herokuapp.com/node_modules/canvas-designer/widget.min.js'
+designer.widgetHtmlURL = 'https://rtcmulticonnection.herokuapp.com:443/node_modules/canvas-designer/widget.html';
+designer.widgetJsURL = 'https://rtcmulticonnection.herokuapp.com:443/node_modules/canvas-designer/widget.min.js'
 
 designer.addSyncListener(function(data) {
     connection.send(data);
@@ -503,6 +498,7 @@ connection.onUserStatusChanged = function(event) {
     });
     var p = document.getElementById("participants-of-room")
     p.innerHTML = table
+    console.log(p)
     //infoBar.innerHTML = '<b>Active users:</b> ' + names.join(', ');
 };
 
@@ -538,7 +534,6 @@ connection.onopen = function(event) {
     }
 
     document.getElementById('btn-chat-message').disabled = false;
-    document.getElementById('btn-share-screen').style.display = 'inline-block';
 };
 
 connection.onclose = connection.onerror = connection.onleave = function(event) {
@@ -814,35 +809,6 @@ connection.onFileStart = function(file) {
     progressHelper[file.uuid].progress.max = file.maxChunks;
 }
 
-// connection.onFileStart = function(file) {
-//     var div = document.createElement('div');
-//     div.className = 'message';
-
-//     if (file.userid === connection.userid) {
-//         var userFullName = file.remoteUserId;
-//         if(connection.peersBackup[file.remoteUserId]) {
-//             userFullName = connection.peersBackup[file.remoteUserId].extra.userFullName;
-//         }
-
-//         div.innerHTML = '<label>0%</label> <progress></progress>';
-//         div.style.background = '#cbffcb';
-//     } else {
-//         div.innerHTML = '<label>0%</label> <progress></progress>';
-//     }
-
-//     div.title = file.name;
-//     conversationPanel.appendChild(div);
-//     progressHelper[file.uuid] = {
-//         div: div,
-//         progress: div.querySelector('progress'),
-//         label: div.querySelector('label')
-//     };
-//     progressHelper[file.uuid].progress.max = file.maxChunks;
-
-//     conversationPanel.scrollTop = conversationPanel.clientHeight;
-//     conversationPanel.scrollTop = conversationPanel.scrollHeight - conversationPanel.scrollTop;
-// };
-
 function updateLabel(progress, label) {
     if (progress.position == -1) return;
     var position = +progress.position.toFixed(2).split('.')[1] || 100;
@@ -911,130 +877,30 @@ designer.appendTo(document.getElementById('widget-container'), function() {
     }
 });
 
-function addStreamStopListener(stream, callback) {
-    stream.addEventListener('ended', function() {
-        callback();
-        callback = function() {};
-    }, false);
-
-    stream.addEventListener('inactive', function() {
-        callback();
-        callback = function() {};
-    }, false);
-
-    stream.getTracks().forEach(function(track) {
-        track.addEventListener('ended', function() {
-            callback();
-            callback = function() {};
-        }, false);
-
-        track.addEventListener('inactive', function() {
-            callback();
-            callback = function() {};
-        }, false);
+let screen_stream, recorder;
+document.getElementById("btn-recording").onclick = async function() {
+    screen_stream = await navigator.mediaDevices.getDisplayMedia({
+        video: { mediaSource: "screen" }
     });
+    recorder = new MediaRecorder(screen_stream);
+
+    const chunks = [];
+    recorder.ondataavailable = e => chunks.push(e.data);
+    recorder.onstop = e => {
+        const completeBlob = new Blob(chunks, { type: chunks[0].type });
+
+        const link = document.createElement('a')
+        link.href = URL.createObjectURL(completeBlob);
+        link.setAttribute('download', "Recording");
+        link.style.display = 'none';
+
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+    recorder.start();
 }
 
-function replaceTrack(videoTrack, screenTrackId) {
-    if (!videoTrack) return;
-    if (videoTrack.readyState === 'ended') {
-        alert('Can not replace an "ended" track. track.readyState: ' + videoTrack.readyState);
-        return;
-    }
-    connection.getAllParticipants().forEach(function(pid) {
-        var peer = connection.peers[pid].peer;
-        if (!peer.getSenders) return;
-        var trackToReplace = videoTrack;
-        peer.getSenders().forEach(function(sender) {
-            if (!sender || !sender.track) return;
-            if(screenTrackId) {
-                if(trackToReplace && sender.track.id === screenTrackId) {
-                    sender.replaceTrack(trackToReplace);
-                    trackToReplace = null;
-                }
-                return;
-            }
-
-            if(sender.track.id !== tempStream.getTracks()[0].id) return;
-            if (sender.track.kind === 'video' && trackToReplace) {
-                sender.replaceTrack(trackToReplace);
-                trackToReplace = null;
-            }
-        });
-    });
-}
-
-function replaceScreenTrack(stream) {
-    stream.isScreen = true;
-    stream.streamid = stream.id;
-    stream.type = 'local';
-
-    // connection.attachStreams.push(stream);
-    connection.onstream({
-        stream: stream,
-        type: 'local',
-        streamid: stream.id,
-        // mediaElement: video
-    });
-
-    var screenTrackId = stream.getTracks()[0].id;
-    addStreamStopListener(stream, function() {
-        connection.send({
-            hideMainVideo: true
-        });
-
-        // $('#main-video').hide();
-        $('#screen-viewer').hide();
-        $('#btn-share-screen').show();
-        replaceTrack(tempStream.getTracks()[0], screenTrackId);
-    });
-
-    stream.getTracks().forEach(function(track) {
-        if(track.kind === 'video' && track.readyState === 'live') {
-            replaceTrack(track);
-        }
-    });
-
-    connection.send({
-        showMainVideo: true
-    });
-
-    // $('#main-video').show();
-    $('#screen-viewer').css({
-            top: $('#widget-container').offset().top,
-            left: $('#widget-container').offset().left,
-            width: $('#widget-container').width(),
-            height: $('#widget-container').height()
-        });
-    $('#screen-viewer').show();
-}
-
-$('#btn-share-screen').click(function() {
-    if(!window.tempStream) {
-        alert('Screen sharing is not enabled.');
-        return;
-    }
-
-    $('#btn-share-screen').hide();
-
-    if(navigator.mediaDevices.getDisplayMedia) {
-        navigator.mediaDevices.getDisplayMedia(screen_constraints).then(stream => {
-            replaceScreenTrack(stream);
-        }, error => {
-            alert('Please make sure to use Edge 17 or higher.');
-        });
-    }
-    else if(navigator.getDisplayMedia) {
-        navigator.getDisplayMedia(screen_constraints).then(stream => {
-            replaceScreenTrack(stream);
-        }, error => {
-            alert('Please make sure to use Edge 17 or higher.');
-        });
-    }
-    else {
-        alert('getDisplayMedia API is not available in this browser.');
-    }
-});
 </script>
 </body>
 </html>
