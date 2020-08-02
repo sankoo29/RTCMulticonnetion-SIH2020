@@ -170,10 +170,10 @@ hr {
        <!-- <input type="button" class="btn-new third" id="btn-show-panel" value="Hide Canvas" style="display: none" style="margin-top:5px">-->
         <input type="button" class="btn-new third" id="btn-mute" value="Mute" style="margin-top:5px">
         <input type="button" class="btn-new third" id="btn-hide-video" value="Hide Video" style="margin-top:5px">
-       <!--  <input type="button" class="btn-new third" id="btn-recording" value="Record" style="margin-top:5px">  -->          
+        <input type="button" class="btn-new third" id="btn-recording" value="Record" style="margin-top:5px">           
         </div>
 
-        <!-- <hr style="background-color: black"> -->
+        <hr style="background-color: black">
 
         <!-- Shows active users -->
         <!-- <div style="padding: 5px 10px;">
@@ -181,7 +181,7 @@ hr {
         </div> -->
 
         <!-- Notepad starts-->
-          <!-- <div id="notepad" style="display: none width:25%">
+          <div id="notepad" style="display: none width:25%">
             <div class="btngroup" style="margin-left: 2%; margin-bottom: 2%; margin: 0 auto width:25%">
                 <input class="btngroup--btn" type="button" id="bold" value="B" style="font-weight: bold;" size="28">
                 <input class="btngroup--btn" type="button" id="italic" value="I" style="font-style: italic;" size="30">
@@ -194,7 +194,7 @@ hr {
             <br><textarea id="output" class="notepad"></textarea><br>
 
           </div>
-            <hr style="background-color: black"> -->
+            <hr style="background-color: black">
 
         <!-- Notepad ends -->
         <div id="other-participants" style="margin-left: 2%; margin-right: 2%; height: 20%; overflow-y: scroll">
@@ -203,7 +203,7 @@ hr {
         </div>
 
         <!-- Chat room Window -->
-        <!-- <link rel="stylesheet" type="text/css" href="./chatroom.css">
+        <link rel="stylesheet" type="text/css" href="./chatroom.css">
         <div class="chatbox-holder">
           <div class="chatbox chatbox-min">
             <div class="chatbox-top">
@@ -223,7 +223,7 @@ hr {
               <input type="button" value="Send" class="message-send" id="btn-chat-message">
             </div>
           </div>
-        </div> -->
+        </div>
         <!-- Chat room window ends-->
 
         <canvas id="temp-stream-canvas" style="display: none;"></canvas>
@@ -254,12 +254,12 @@ hr {
     //}
     var user_role = params.role
     if (user_role == 0 || user_role == 1) {
-        //document.getElementById("notepad").style.display = "inline-block";
-        //document.getElementById("btn-chat-message").style.display = "inline-block";
+        document.getElementById("notepad").style.display = "inline-block";
+        document.getElementById("btn-chat-message").style.display = "inline-block";
        // document.getElementById("btn-show-panel").style.display = "inline-block";
     }
     else if (user_role == 2) {
-        //document.getElementById("btn-chat-message").style.display = "inline-block";
+        document.getElementById("btn-chat-message").style.display = "inline-block";
        // document.getElementById("btn-show-panel").style.display = "inline-block";
         document.getElementById("widget-container").style.pointerEvents = "none";
     }
@@ -268,14 +268,14 @@ hr {
         document.getElementById("widget-container").style.display = "none";
     }
 
-    //document.getElementById("txt-chat-message").style.display = "inline-block"
+    document.getElementById("txt-chat-message").style.display = "inline-block"
 })();
 
 $(function(){
   $('.fa-minus').click(function(){    $(this).closest('.chatbox').toggleClass('chatbox-min');
   });
 });
-/*
+
 // Notes section starts from here
 document.getElementById("bold").onclick = function() {
     if (document.getElementById("output").style.fontWeight == "normal") {
@@ -320,12 +320,12 @@ document.getElementById("download").onclick = function() {
 
     document.body.removeChild(element);
 }
-*/
+
 
 
 function isLawPersonal() {
     if (connection.extra.role == 0 || connection.extra.role == 1) {
-        //document.getElementById("notepad").style.display = "block"
+        document.getElementById("notepad").style.display = "block"
     }
 }
 
@@ -734,43 +734,43 @@ function appendChatMessage(event, checkmark_id) {
 }*/
 
 
-// document.getElementById('btn-chat-message').onclick = function() {
-//     // var chatMessage = $('.emojionearea-editor').html();
-//     // $('.emojionearea-editor').html('');
+document.getElementById('btn-chat-message').onclick = function() {
+    // var chatMessage = $('.emojionearea-editor').html();
+    // $('.emojionearea-editor').html('');
 
-//     var chatMessage = document.getElementById("txt-chat-message").value;
-//     document.getElementById("txt-chat-message").value = ""
+    var chatMessage = document.getElementById("txt-chat-message").value;
+    document.getElementById("txt-chat-message").value = ""
 
-//     if (!chatMessage || !chatMessage.replace(/ /g, '').length) return;
+    if (!chatMessage || !chatMessage.replace(/ /g, '').length) return;
 
-//     var checkmark_id = connection.userid + connection.token();
+    var checkmark_id = connection.userid + connection.token();
 
-//     console.log(chatMessage) 
-//     appendChatMessage(chatMessage, checkmark_id);
+    console.log(chatMessage)
+    appendChatMessage(chatMessage, checkmark_id);
 
-//     connection.send({
-//         chatMessage: chatMessage,
-//         checkmark_id: checkmark_id
-//     });
+    connection.send({
+        chatMessage: chatMessage,
+        checkmark_id: checkmark_id
+    });
 
-//     connection.send({
-//         typing: false
-//     });
-// };
+    connection.send({
+        typing: false
+    });
+};
 
-// var recentFile;
+var recentFile;
 
-// document.getElementById('btn-send-file').onclick = function() {
-//     var file = new FileSelector();
-//     file.selectSingleFile(function(file) {
-//         recentFile = file;
+document.getElementById('btn-send-file').onclick = function() {
+    var file = new FileSelector();
+    file.selectSingleFile(function(file) {
+        recentFile = file;
 
-//         if(connection.getAllParticipants().length >= 1) {
-//             recentFile.userIndex = 0;
-//             connection.send(file, connection.getAllParticipants()[recentFile.userIndex]);
-//         }
-//     });
-// };
+        if(connection.getAllParticipants().length >= 1) {
+            recentFile.userIndex = 0;
+            connection.send(file, connection.getAllParticipants()[recentFile.userIndex]);
+        }
+    });
+};
 
 function getFullName(userid) {
     var _userFullName = userid;
@@ -920,29 +920,29 @@ designer.appendTo(document.getElementById('widget-container'), function() {
     }
 });
 
-let screen_stream, recorder;
-// document.getElementById("btn-recording").onclick = async function() {
-//     screen_stream = await navigator.mediaDevices.getDisplayMedia({
-//         video: { mediaSource: "screen" }
-//     });
-//     recorder = new MediaRecorder(screen_stream);
+let screen_stream, reloadecorder;
+document.getElementById("btn-recording").onclick = async function() {
+    screen_stream = await navigator.mediaDevices.getDisplayMedia({
+        video: { mediaSource: "screen" }
+    });
+    recorder = new MediaRecorder(screen_stream);
 
-//     const chunks = [];
-//     recorder.ondataavailable = e => chunks.push(e.data);
-//     recorder.onstop = e => {
-//         const completeBlob = new Blob(chunks, { type: chunks[0].type });
+    const chunks = [];
+    recorder.ondataavailable = e => chunks.push(e.data);
+    recorder.onstop = e => {
+        const completeBlob = new Blob(chunks, { type: chunks[0].type });
 
-//         const link = document.createElement('a')
-//         link.href = URL.createObjectURL(completeBlob);
-//         link.setAttribute('download', "Recording");
-//         link.style.display = 'none';
+        const link = document.createElement('a')
+        link.href = URL.createObjectURL(completeBlob);
+        link.setAttribute('download', "Recording");
+        link.style.display = 'none';
 
-//         document.body.appendChild(link);
-//         link.click();
-//         document.body.removeChild(link);
-//     }
-//     recorder.start();
-// }
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+    recorder.start();
+}
 
 </script>
 </body>
